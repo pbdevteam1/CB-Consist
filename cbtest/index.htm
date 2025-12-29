@@ -620,7 +620,10 @@
             // 🎯 זה החלק הכי חשוב!
             // requestAgent() גורם למשתמש להופיע בדשבורד עם סימון "מבקש עזרה"
             Upscope('requestAgent');
+            
+            // 📞 בקש גם שיחה קולית!
             Upscope('requestCall');
+            
             // עדכן את הכפתור למצב המתנה
             updateButtonState('waiting');
             
@@ -628,6 +631,7 @@
             showLookupCode();
             
             console.log('🆘 Help requested - You are now visible in the agent dashboard!');
+            console.log('📞 Call requested - Agent can start voice/video call!');
         }
         
         // ============================================
@@ -737,8 +741,9 @@
         // ============================================
         // Debug Info
         // ============================================
-        console.log('🚀 Upscope initialized - Version 2');
+        console.log('🚀 Upscope initialized - Version 2 with Call');
         console.log('📌 Users must click "Help" button to request agent');
+        console.log('📞 Call feature enabled - agent can start voice/video');
         console.log('💡 Press CTRL+H for quick help request');
     </script>
 </body>
