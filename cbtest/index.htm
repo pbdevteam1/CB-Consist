@@ -486,7 +486,7 @@
 
     <!-- Help Request Button -->
     <button class="help-btn" id="helpBtn" onclick="requestHelp()">
-        🆘 בקשת עזרה מנציג
+        בקשת עזרה ושיתוף מסך
     </button>
 
     <!-- Waiting Window -->
@@ -546,45 +546,77 @@
         // ============================================
         // 2. Upscope Init - אתחול
         // ============================================
-        Upscope('init');
-        console.log('✅ Upscope initialized');
+        Upscope('init', {
+            showAgentRequestButton: 'always'  // מפעיל את כפתור בקשת נציג
+        });
+        console.log('✅ Upscope initialized with agent request button enabled');
         
         // ============================================
         // 3. Request Help Function - בקשת עזרה מנציג
         // ============================================
+        let userDataSet = false; // flag to track if user data was set
+        
         function requestHelp() {
-            console.log('🆘 User requesting help...');
+            console.log('🆘 User clicked help button...');
             
-            // קרא ל-requestAgent
-            Upscope('requestAgent');
-            console.log('✅ requestAgent() called - is_waiting_for_call should be TRUE now');
+            // בקש אישור מהמשתמש
+            const confirmed = confirm(
+                '📢 בקשת עזרה ושיתוף מסך\n\n' +
+                'תשלח בקשה לנציג שירות לראות את המסך שלך.\n\n' +
+                'הנציג יוכל לראות את הדף ולעזור לך למלא את הטופס.\n\n' +
+                'להמשך אנא אשר/דחה'
+            );
             
-            // הצג חלונית המתנה
-            document.getElementById('waitingWindow').classList.add('show');
+            if (!confirmed) {
+                console.log('❌ User declined screen share request');
+                return; // המשתמש דחה - לא עושים כלום
+            }
             
-            // נסה לקבל lookup code (PIN)
-            setTimeout(() => {
-                Upscope('getLookupCode', function(code) {
-                    if (code) {
-                        document.getElementById('pinCode').textContent = code;
-                        console.log('🔑 Lookup Code (PIN):', code);
-                    } else {
-                        console.log('⚠️ Lookup code not available yet, retrying...');
-                        // נסה שוב אחרי 2 שניות
-                        setTimeout(() => {
-                            Upscope('getLookupCode', function(retryCode) {
-                                if (retryCode) {
-                                    document.getElementById('pinCode').textContent = retryCode;
-                                    console.log('🔑 Lookup Code (retry):', retryCode);
-                                } else {
-                                    console.log('❌ Could not get lookup code');
-                                    document.getElementById('pinCode').textContent = '----';
-                                }
-                            });
-                        }, 2000);
-                    }
+            console.log('✅ User approved screen share request');
+            
+            // בדוק אם יש פרטי משתמש
+            if (!userDataSet) {
+                // אם אין פרטים, השתמש בפרטים זמניים
+                console.log('⚠️ No user data yet, using temporary identity');
+                Upscope('updateConnection', {
+                    uniqueId: 'temp_visitor_' + Date.now(),
+                    identities: ['מבקר זמני', 'מבקש עזרה']
                 });
-            }, 1000);
+            }
+            
+            // המתן רגע קצר שהעדכון יעבור
+            setTimeout(() => {
+                // קרא ל-requestAgent
+                Upscope('requestAgent');
+                console.log('✅ requestAgent() called - agent should be notified');
+                
+                // הצג חלונית המתנה
+                document.getElementById('waitingWindow').classList.add('show');
+                
+                // נסה לקבל lookup code (PIN)
+                setTimeout(() => {
+                    Upscope('getLookupCode', function(code) {
+                        if (code) {
+                            document.getElementById('pinCode').textContent = code;
+                            console.log('🔑 Lookup Code (PIN):', code);
+                        } else {
+                            console.log('⚠️ Lookup code not available yet, retrying...');
+                            // נסה שוב אחרי 2 שניות
+                            setTimeout(() => {
+                                Upscope('getLookupCode', function(retryCode) {
+                                    if (retryCode) {
+                                        document.getElementById('pinCode').textContent = retryCode;
+                                        console.log('🔑 Lookup Code (retry):', retryCode);
+                                    } else {
+                                        console.log('❌ Could not get lookup code');
+                                        document.getElementById('pinCode').textContent = '----';
+                                    }
+                                });
+                            }, 2000);
+                        }
+                    });
+                }, 1000);
+            }, 500);
         }
         
         function closeWaitingWindow() {
@@ -676,6 +708,8 @@
                 identities: [fullName, formData.email, formData.phone]
             });
             
+            userDataSet = true; // סמן שיש פרטי משתמש
+            
             console.log('✅ Upscope updated with user data:', {
                 uniqueId: formData.email,
                 identities: [fullName, formData.email, formData.phone]
@@ -696,6 +730,10 @@
         
         Upscope('on', 'disconnect', function() {
             console.log('❌ Disconnected from Upscope');
+        });
+        
+        Upscope('on', 'agentRequested', function() {
+            console.log('🆘 [EVENT] Agent requested successfully! is_waiting_for_call should be TRUE');
         });
         
         Upscope('on', 'sessionStart', function() {
