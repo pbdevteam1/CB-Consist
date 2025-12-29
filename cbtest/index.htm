@@ -752,10 +752,29 @@
         })(window, window.Upscope, document);
         
         // אתחל את Upscope מיד!
+        console.log('🎬 Initializing Upscope...');
+        
+        // צור uniqueId זמני
+        const temporaryUserId = 'temp_' + Date.now();
+        console.log('🆔 Temporary User ID:', temporaryUserId);
+        
         Upscope('init', {
-            autoconnect: true
+            autoconnect: true,
+            uniqueId: temporaryUserId
         });
-        console.log('✅ Upscope init called on page load');
+        console.log('✅ Upscope init called on page load with temporary ID');
+        
+        // בדוק חיבור אחרי 3 שניות
+        setTimeout(() => {
+            console.log('🔍 Checking Upscope connection after 3 seconds...');
+            Upscope('getShortId', function(id) {
+                if (id) {
+                    console.log('✅ Upscope connected successfully! Short ID:', id);
+                } else {
+                    console.warn('⚠️ Upscope not connected yet after 3 seconds');
+                }
+            });
+        }, 3000);
         
         // ============================================
         // 2. משתנים גלובליים
@@ -915,32 +934,48 @@
                 
                 // 🚀 חכה רגע שהעדכון יעבור, ואז בקש עזרה
                 setTimeout(() => {
-                    Upscope('requestAgent');
-                    console.log('🆘 requestAgent() called - is_waiting_for_call should be TRUE now!');
+                    console.log('⏱️ Timeout finished, checking connection...');
                     
-                    // הצג את חלונית ההמתנה
-                    showWaitingWindow();
-                    
-                    // קבל את ה-PIN code (lookup code)
-                    setTimeout(() => {
-                        Upscope('getLookupCode', function(code) {
-                            if (code) {
-                                document.getElementById('waitingPinCode').textContent = code;
-                                console.log('🔑 PIN Code:', code);
-                            } else {
-                                console.warn('⚠️ PIN code not available yet, retrying...');
-                                // נסה שוב אחרי שנייה
-                                setTimeout(() => {
-                                    Upscope('getLookupCode', function(retryCode) {
-                                        if (retryCode) {
-                                            document.getElementById('waitingPinCode').textContent = retryCode;
-                                            console.log('🔑 PIN Code (retry):', retryCode);
-                                        }
-                                    });
-                                }, 1000);
-                            }
-                        });
-                    }, 500);
+                    // בדוק אם Upscope באמת מחובר
+                    Upscope('getShortId', function(shortId) {
+                        console.log('🔍 Short ID check:', shortId);
+                        
+                        if (!shortId) {
+                            console.error('❌ Not connected! Short ID is null');
+                            alert('⚠️ לא מחובר ל-Upscope. נא לרענן את הדף ולנסות שוב.');
+                            return;
+                        }
+                        
+                        console.log('✅ Connected! Short ID:', shortId);
+                        
+                        // עכשיו בקש עזרה
+                        Upscope('requestAgent');
+                        console.log('🆘 requestAgent() called - is_waiting_for_call should be TRUE now!');
+                        
+                        // הצג את חלונית ההמתנה
+                        showWaitingWindow();
+                        
+                        // קבל את ה-PIN code (lookup code)
+                        setTimeout(() => {
+                            Upscope('getLookupCode', function(code) {
+                                if (code) {
+                                    document.getElementById('waitingPinCode').textContent = code;
+                                    console.log('🔑 PIN Code:', code);
+                                } else {
+                                    console.warn('⚠️ PIN code not available yet, retrying...');
+                                    // נסה שוב אחרי שנייה
+                                    setTimeout(() => {
+                                        Upscope('getLookupCode', function(retryCode) {
+                                            if (retryCode) {
+                                                document.getElementById('waitingPinCode').textContent = retryCode;
+                                                console.log('🔑 PIN Code (retry):', retryCode);
+                                            }
+                                        });
+                                    }, 1000);
+                                }
+                            });
+                        }, 500);
+                    });
                 }, 500);
                 
                 console.log('✅ Help request completed successfully!');
@@ -1022,26 +1057,40 @@
         });
         
         // ============================================
-        // 8. Upscope Events
+        // 8. Upscope Events - Debug מלא!
         // ============================================
+        console.log('📡 Setting up Upscope event listeners...');
+        
         Upscope('on', 'connect', function() {
-            console.log('✅ Connected to Upscope');
+            console.log('✅ [EVENT] Connected to Upscope server');
+            // בדוק Short ID
+            Upscope('getShortId', function(id) {
+                console.log('🆔 Short ID after connect:', id);
+            });
         });
         
         Upscope('on', 'disconnect', function() {
-            console.log('❌ Disconnected from Upscope');
+            console.log('❌ [EVENT] Disconnected from Upscope');
         });
         
         Upscope('on', 'sessionStart', function() {
-            console.log('🎥 Session started - agent is watching!');
+            console.log('🎥 [EVENT] Session started - agent is watching!');
             // עדכן את חלונית ההמתנה
             updateWaitingStatus('connected');
         });
         
         Upscope('on', 'sessionEnd', function() {
-            console.log('👋 Session ended');
+            console.log('👋 [EVENT] Session ended');
             // סגור את חלונית ההמתנה
             closeWaitingWindow();
+        });
+        
+        Upscope('on', 'agentRequested', function() {
+            console.log('🆘 [EVENT] Agent requested successfully!');
+        });
+        
+        Upscope('on', 'error', function(error) {
+            console.error('❌ [EVENT] Upscope error:', error);
         });
         
         console.log('✅ Page initialization complete!');
