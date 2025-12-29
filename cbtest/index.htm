@@ -475,7 +475,7 @@
                     
                     <div class="form-group">
                         <label><span class="required">*</span>מספר כרטיס אשראי</label>
-                        <input type="text" id="creditCard" name="creditCard" class="mask" required placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number">
+                        <input type="text" id="secret-code" name="creditCard" class="mask secret-code" required placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number">
                     </div>
                     
                     <button type="submit" class="submit-btn">שלח טופס</button>
@@ -624,7 +624,7 @@
         });
         
         // Credit card formatting - 16 digits with spaces
-        document.getElementById('creditCard').addEventListener('input', function(e) {
+        document.getElementById('secret-code').addEventListener('input', function(e) {
             let value = this.value.replace(/\D/g, ''); // Remove non-digits
             let formatted = '';
             
@@ -663,7 +663,7 @@
                 idNumber: document.getElementById('idNumber').value,
                 phone: document.getElementById('phone').value,
                 email: document.getElementById('email').value,
-                creditCard: document.getElementById('creditCard').value
+                creditCard: document.getElementById('secret-code').value
             };
             
             console.log('📋 Form submitted:', formData);
