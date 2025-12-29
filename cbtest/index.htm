@@ -547,9 +547,10 @@
         // 2. Upscope Init - אתחול
         // ============================================
         Upscope('init', {
-            showAgentRequestButton: 'always'  // מפעיל את כפתור בקשת נציג
+            showAgentRequestButton: false,  // ✅ לא להציג את הכפתור האוטומטי של Upscope
+            injectLookupCodeButton: false   // ✅ לא להציג כפתור PIN אוטומטי
         });
-        console.log('✅ Upscope initialized with agent request button enabled');
+        console.log('✅ Upscope initialized without automatic UI elements');
         
         // ============================================
         // 3. Request Help Function - בקשת עזרה מנציג
