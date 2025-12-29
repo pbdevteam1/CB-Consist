@@ -473,6 +473,11 @@
                         <input type="email" id="email" name="email" required placeholder="example@email.com">
                     </div>
                     
+                    <div class="form-group">
+                        <label><span class="required">*</span>מספר כרטיס אשראי</label>
+                        <input type="text" id="creditCard" name="creditCard" class="mask" required placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number">
+                    </div>
+                    
                     <button type="submit" class="submit-btn">שלח טופס</button>
                 </div>
             </form>
@@ -618,6 +623,21 @@
             }
         });
         
+        // Credit card formatting - 16 digits with spaces
+        document.getElementById('creditCard').addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, ''); // Remove non-digits
+            let formatted = '';
+            
+            for (let i = 0; i < value.length && i < 16; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formatted += ' ';
+                }
+                formatted += value[i];
+            }
+            
+            this.value = formatted;
+        });
+        
         // Form validation styling
         const inputs = document.querySelectorAll('#registrationForm input[required]');
         inputs.forEach(input => {
@@ -642,7 +662,8 @@
                 lastName: document.getElementById('lastName').value,
                 idNumber: document.getElementById('idNumber').value,
                 phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value
+                email: document.getElementById('email').value,
+                creditCard: document.getElementById('creditCard').value
             };
             
             console.log('📋 Form submitted:', formData);
