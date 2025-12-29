@@ -751,18 +751,8 @@
             }
         })(window, window.Upscope, document);
         
-        // אתחל את Upscope מיד!
-        console.log('🎬 Initializing Upscope...');
-        
-        // צור uniqueId זמני
-        const temporaryUserId = 'temp_' + Date.now();
-        console.log('🆔 Temporary User ID:', temporaryUserId);
-        
-        Upscope('init', {
-            autoconnect: true,
-            uniqueId: temporaryUserId
-        });
-        console.log('✅ Upscope init called on page load with temporary ID');
+        console.log('✅ Upscope script is loading in background...');
+        console.log('💡 User will be registered only when requesting help');
         
         // ============================================
         // 2. משתנים גלובליים
@@ -909,18 +899,18 @@
                     screenShareUserData.phone
                 ];
                 
-                console.log('🔑 Updating connection:', { uniqueId, identities });
+                console.log('🎬 Initializing Upscope with real user data:', { uniqueId, identities });
                 
-                // עדכן פרטי חיבור
-                Upscope('updateConnection', {
+                // אתחל את Upscope עם הפרטים האמיתיים!
+                Upscope('init', {
                     uniqueId: uniqueId,
                     identities: identities,
                     tags: ['בקשת-עזרה', 'טופס-פרטים']
                 });
                 
-                console.log('✅ Connection updated - waiting 500ms for server sync...');
+                console.log('✅ Upscope initialized with real user data - waiting 2000ms for connection...');
                 
-                // 🚀 חכה רגע שהעדכון יעבור, ואז בקש עזרה
+                // 🚀 המתן 2 שניות שUpscope יתחבר לחלוטין
                 setTimeout(() => {
                     console.log('⏱️ Timeout finished, requesting agent...');
                     
@@ -938,20 +928,34 @@
                                 document.getElementById('waitingPinCode').textContent = code;
                                 console.log('🔑 PIN Code:', code);
                             } else {
-                                console.warn('⚠️ PIN code not available yet, retrying...');
+                                console.warn('⚠️ PIN code not available yet, retrying in 1s...');
                                 // נסה שוב אחרי שנייה
                                 setTimeout(() => {
                                     Upscope('getLookupCode', function(retryCode) {
                                         if (retryCode) {
                                             document.getElementById('waitingPinCode').textContent = retryCode;
-                                            console.log('🔑 PIN Code (retry):', retryCode);
+                                            console.log('🔑 PIN Code (retry 1):', retryCode);
+                                        } else {
+                                            console.warn('⚠️ PIN code still not available, retrying in 2s...');
+                                            // נסה פעם שלישית אחרי 2 שניות
+                                            setTimeout(() => {
+                                                Upscope('getLookupCode', function(finalCode) {
+                                                    if (finalCode) {
+                                                        document.getElementById('waitingPinCode').textContent = finalCode;
+                                                        console.log('🔑 PIN Code (retry 2):', finalCode);
+                                                    } else {
+                                                        console.error('❌ Could not get PIN code after 3 attempts');
+                                                        document.getElementById('waitingPinCode').textContent = '----';
+                                                    }
+                                                });
+                                            }, 2000);
                                         }
                                     });
                                 }, 1000);
                             }
                         });
                     }, 1000);  // המתן שנייה ל-PIN
-                }, 1000);  // המתן שנייה ל-requestAgent
+                }, 2000);  // המתן 2 שניות ל-init + connect
                 
                 console.log('✅ Help request completed successfully!');
                 
