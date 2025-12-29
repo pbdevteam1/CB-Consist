@@ -540,12 +540,60 @@
         </div>
     </div>
 
+    <!-- ============================================ -->
+    <!-- Upscope Integration - טעינה מיידית! -->
+    <!-- ============================================ -->
     <script>
-        // Global variables
-        let upscopeLoaded = false;
+        console.log('🚀 Starting page initialization...');
+        
+        // ============================================
+        // 1. טען את Upscope מיד בפתיחת הדף!
+        // ============================================
+        (function(w, u, d){
+            console.log('📥 Loading Upscope script on page load...');
+            
+            var i = function(){i.c(arguments)};
+            i.q = [];
+            i.c = function(args){i.q.push(args)};
+            
+            var l = function(){
+                var s = d.createElement('script');
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = 'https://code.upscope.io/TFKCZ2GziF.js';
+                
+                s.onload = function() {
+                    console.log('✅ Upscope script loaded successfully on page load!');
+                };
+                
+                s.onerror = function(error) {
+                    console.error('❌ Failed to load Upscope script:', error);
+                };
+                
+                var x = d.getElementsByTagName('script')[0];
+                x.parentNode.insertBefore(s, x);
+            };
+            
+            if (typeof u !== "function") {
+                w.Upscope = i;
+                l();
+            }
+        })(window, window.Upscope, document);
+        
+        // אתחל את Upscope מיד!
+        Upscope('init', {
+            autoconnect: true
+        });
+        console.log('✅ Upscope init called on page load');
+        
+        // ============================================
+        // 2. משתנים גלובליים
+        // ============================================
         let screenShareUserData = null;
         
-        // Show screen share form modal
+        // ============================================
+        // 3. פונקציות Modal
+        // ============================================
         function showScreenShareForm() {
             document.getElementById('screenShareModal').classList.add('show');
             
@@ -566,29 +614,27 @@
             }
         }
         
-        // Close modal
         function closeModal() {
             document.getElementById('screenShareModal').classList.remove('show');
             clearErrors();
         }
         
-        // Close success modal
         function closeSuccessModal() {
             document.getElementById('successModal').classList.remove('show');
         }
         
-        // Clear error messages
         function clearErrors() {
             document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
             document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
         }
         
-        // Validate form fields
+        // ============================================
+        // 4. Validation
+        // ============================================
         function validateForm() {
             let isValid = true;
             clearErrors();
             
-            // Validate full name
             const fullName = document.getElementById('modalFullName').value.trim();
             if (!fullName || fullName.length < 2) {
                 document.getElementById('fullNameError').classList.add('show');
@@ -596,7 +642,6 @@
                 isValid = false;
             }
             
-            // Validate phone
             const phone = document.getElementById('modalPhone').value.trim();
             const phoneRegex = /^0[2-9]\d{1,2}-?\d{7}$/;
             if (!phone || !phoneRegex.test(phone.replace(/-/g, ''))) {
@@ -605,7 +650,6 @@
                 isValid = false;
             }
             
-            // Validate email
             const email = document.getElementById('modalEmail').value.trim();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!email || !emailRegex.test(email)) {
@@ -617,158 +661,92 @@
             return isValid;
         }
         
-        // Submit screen share request
+        // ============================================
+        // 5. בקשת עזרה - הפונקציה המרכזית!
+        // ============================================
         function submitScreenShareRequest() {
+            console.log('📋 Submit button clicked');
+            
             if (!validateForm()) {
+                console.log('❌ Validation failed');
                 return;
             }
             
-            // Get form data
+            // שמור פרטי משתמש
             screenShareUserData = {
                 fullName: document.getElementById('modalFullName').value.trim(),
                 phone: document.getElementById('modalPhone').value.trim(),
                 email: document.getElementById('modalEmail').value.trim()
             };
             
-            // Close the form modal
+            console.log('✅ User data collected:', screenShareUserData);
+            
+            // סגור modal
             closeModal();
             
-            // Load Upscope script and initialize
-            loadUpscopeAndStart();
+            // Upscope כבר טעון! רק צריך לעדכן פרטים ולבקש עזרה
+            requestHelpWithUpscope();
         }
         
-        // Load Upscope script dynamically
-        function loadUpscopeAndStart() {
-            console.log('🔵 Starting Upscope load process...');
-            
-            if (upscopeLoaded) {
-                console.log('✅ Upscope already loaded, starting session...');
-                startUpscopeSession();
-                return;
-            }
-            
-            console.log('📥 Loading Upscope script...');
-            
-            // Initialize Upscope stub using the official pattern
-            (function(w, u, d){
-                var i = function(){i.c(arguments)};
-                i.q = [];
-                i.c = function(args){i.q.push(args)};
-                
-                var l = function(){
-                    var s = d.createElement('script');
-                    s.type = 'text/javascript';
-                    s.async = true;
-                    s.src = 'https://code.upscope.io/TFKCZ2GziF.js';
-                    
-                    s.onload = function() {
-                        console.log('✅ Upscope script loaded successfully');
-                        upscopeLoaded = true;
-                        
-                        try {
-                            // Wait a bit for script to initialize
-                            setTimeout(() => {
-                                console.log('🚀 Starting Upscope session...');
-                                startUpscopeSession();
-                            }, 2000);
-                            
-                        } catch (error) {
-                            console.error('❌ Error initializing Upscope:', error);
-                            alert('⚠️ שגיאה באתחול מערכת שיתוף המסך.\n\nפרטי השגיאה: ' + error.message);
-                        }
-                    };
-                    
-                    s.onerror = function(error) {
-                        console.error('❌ Failed to load Upscope script:', error);
-                        alert('⚠️ שגיאה בטעינת מערכת שיתוף המסך.\n\nאנא נסה שוב מאוחר יותר.');
-                    };
-                    
-                    var x = d.getElementsByTagName('script')[0];
-                    x.parentNode.insertBefore(s, x);
-                    console.log('📤 Upscope script added to page');
-                };
-                
-                if (typeof u !== "function") {
-                    w.Upscope = i;
-                    l();
-                }
-            })(window, window.Upscope, document);
-            
-            // Call init immediately after setting up the stub
-            console.log('🔧 Calling Upscope init...');
-            Upscope('init');
-            console.log('✅ Upscope init queued');
-        }
-        
-        // Start Upscope session with user data
-        function startUpscopeSession() {
-            console.log('🎯 startUpscopeSession called');
+        // ============================================
+        // 6. בקש עזרה עם Upscope (שכבר טעון!)
+        // ============================================
+        function requestHelpWithUpscope() {
+            console.log('🎯 Requesting help with Upscope (already loaded)');
             
             if (!screenShareUserData) {
                 console.error('❌ No user data available');
-                alert('⚠️ שגיאה: נתוני המשתמש לא זמינים.\nאנא מלא שוב את הטופס.');
+                alert('⚠️ שגיאה: נתוני המשתמש לא זמינים.');
                 return;
             }
             
-            console.log('📋 User data:', screenShareUserData);
-            
             try {
-                // Check if Upscope is available
+                // בדוק ש-Upscope קיים
                 if (typeof Upscope !== 'function') {
-                    console.error('❌ Upscope function is not available');
-                    throw new Error('Upscope not loaded');
+                    console.error('❌ Upscope is not loaded yet!');
+                    throw new Error('Upscope not available');
                 }
                 
-                console.log('✅ Upscope function is available');
+                console.log('✅ Upscope is available');
                 
-                // Create unique ID from email or timestamp
                 const uniqueId = screenShareUserData.email || `user_${Date.now()}`;
-                
-                // Create identities array
                 const identities = [
                     screenShareUserData.fullName,
                     screenShareUserData.email,
                     screenShareUserData.phone
                 ];
                 
-                console.log('🔑 Updating Upscope connection with:', {
-                    uniqueId: uniqueId,
-                    identities: identities
-                });
+                console.log('🔑 Updating connection:', { uniqueId, identities });
                 
-                // Update Upscope connection with user info
+                // עדכן פרטי חיבור
                 Upscope('updateConnection', {
                     uniqueId: uniqueId,
-                    identities: identities
+                    identities: identities,
+                    tags: ['בקשת-עזרה', 'טופס-פרטים']
                 });
                 
                 console.log('✅ Connection updated');
                 
-                // 🚀 THIS IS THE FIX! Request agent - this sets is_waiting_for_call to true!
+                // 🚀 בקש עזרה - זה משנה is_waiting_for_call ל-true!
                 Upscope('requestAgent');
-                console.log('🆘 Agent requested - user now visible in dashboard with is_waiting_for_call: true');
+                console.log('🆘 requestAgent() called - is_waiting_for_call should be TRUE now!');
                 
-                console.log('✅ Upscope session started successfully!');
-                console.log('👤 User info sent to Upscope:', {
-                    uniqueId: uniqueId,
-                    identities: identities
-                });
-                
-                // Show success modal
+                // הצג הודעת הצלחה
                 document.getElementById('successModal').classList.add('show');
                 
+                console.log('✅ Help request completed successfully!');
+                
             } catch (error) {
-                console.error('❌ Error starting Upscope session:', error);
-                console.error('Error details:', {
-                    name: error.name,
-                    message: error.message,
-                    stack: error.stack
-                });
-                alert('⚠️ שגיאה בהפעלת שיתוף המסך.\n\nפרטי השגיאה:\n' + error.message + '\n\nאנא פתח קונסול (F12) לפרטים נוספים.');
+                console.error('❌ Error requesting help:', error);
+                alert('⚠️ שגיאה בבקשת עזרה:\n' + error.message);
             }
         }
         
-        // Close modal when clicking outside
+        // ============================================
+        // 7. Event Listeners
+        // ============================================
+        
+        // Close modal on outside click
         document.getElementById('screenShareModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
@@ -781,7 +759,7 @@
             }
         });
         
-        // Clear error on input
+        // Clear errors on input
         document.getElementById('modalFullName').addEventListener('input', function() {
             if (this.value.trim().length >= 2) {
                 this.classList.remove('error');
@@ -790,7 +768,6 @@
         });
         
         document.getElementById('modalPhone').addEventListener('input', function() {
-            // Auto-format phone number
             let value = this.value.replace(/\D/g, '');
             if (value.length > 3 && value.length <= 6) {
                 this.value = value.substring(0, 3) + '-' + value.substring(3);
@@ -815,12 +792,11 @@
             }
         });
         
-        // Validation for ID number in main form - רק מספרים
+        // Validation for main form
         document.getElementById('idNumber').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').substring(0, 9);
         });
         
-        // Validation for phone number in main form - פורמט אוטומטי
         document.getElementById('phone').addEventListener('input', function(e) {
             let value = this.value.replace(/\D/g, '');
             if (value.length > 3 && value.length <= 6) {
@@ -830,7 +806,6 @@
             }
         });
         
-        // הדגשת שדות שגויים בטופס הראשי
         const inputs = document.querySelectorAll('#registrationForm input[required]');
         inputs.forEach(input => {
             input.addEventListener('invalid', function() {
@@ -842,6 +817,29 @@
                 }
             });
         });
+        
+        // ============================================
+        // 8. Upscope Events
+        // ============================================
+        Upscope('on', 'connect', function() {
+            console.log('✅ Connected to Upscope');
+        });
+        
+        Upscope('on', 'disconnect', function() {
+            console.log('❌ Disconnected from Upscope');
+        });
+        
+        Upscope('on', 'sessionStart', function() {
+            console.log('🎥 Session started - agent is watching!');
+        });
+        
+        Upscope('on', 'sessionEnd', function() {
+            console.log('👋 Session ended');
+        });
+        
+        console.log('✅ Page initialization complete!');
+        console.log('🎯 Upscope is loading in background...');
+        console.log('💡 User can browse the page while Upscope connects');
     </script>
 </body>
 </html>
