@@ -162,6 +162,222 @@
             transform: translateY(0);
         }
         
+        /* Help Button */
+        .help-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            font-size: 17px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .help-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .help-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Waiting Window */
+        .waiting-window {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            z-index: 10000;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 24px;
+            width: 320px;
+            border: 3px solid #667eea;
+            animation: slideIn 0.4s ease;
+        }
+        
+        .waiting-window.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .waiting-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .waiting-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        .waiting-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        .waiting-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 4px 0;
+        }
+        
+        .waiting-title p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .waiting-pin-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .waiting-pin-label {
+            font-size: 13px;
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .waiting-pin-code {
+            font-size: 36px;
+            font-weight: 700;
+            color: #92400e;
+            letter-spacing: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 4px 0;
+        }
+        
+        .waiting-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #1e40af;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .waiting-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #93c5fd;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .agent-connected {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .waiting-close {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+        
+        .waiting-close:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        /* Help Request Button */
+        .help-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .help-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .help-btn:active {
+            transform: translateY(0);
+        }
+        
         @media (max-width: 768px) {
             body {
                 padding: 20px 16px;
@@ -200,6 +416,13 @@
             input[type="tel"] {
                 font-size: 16px;
                 padding: 13px 16px;
+            }
+            
+            .help-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 14px 20px;
+                font-size: 15px;
             }
         }
     </style>
@@ -256,6 +479,41 @@
         </div>
     </div>
 
+    <!-- Help Request Button -->
+    <button class="help-btn" id="helpBtn" onclick="requestHelp()">
+        🆘 בקשת עזרה מנציג
+    </button>
+
+    <!-- Waiting Window -->
+    <div class="waiting-window" id="waitingWindow">
+        <button class="waiting-close" onclick="closeWaitingWindow()">×</button>
+        
+        <div class="waiting-header">
+            <div class="waiting-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            <div class="waiting-title">
+                <h3>ממתין לנציג</h3>
+                <p>שיתוף מסך פעיל</p>
+            </div>
+        </div>
+        
+        <div class="waiting-pin-box">
+            <div class="waiting-pin-label">🔑 קוד הזיהוי שלך</div>
+            <div class="waiting-pin-code" id="pinCode">----</div>
+        </div>
+        
+        <div class="waiting-status" id="waitingStatus">
+            <div class="waiting-spinner"></div>
+            <span>ממתין לנציג להתחברות...</span>
+        </div>
+    </div>
+
     <script>
         // ============================================
         // 1. Upscope Installation - טעינת הסקריפט
@@ -287,7 +545,60 @@
         console.log('✅ Upscope initialized');
         
         // ============================================
-        // 3. Form Handling
+        // 3. Request Help Function - בקשת עזרה מנציג
+        // ============================================
+        function requestHelp() {
+            console.log('🆘 User requesting help...');
+            
+            // קרא ל-requestAgent
+            Upscope('requestAgent');
+            console.log('✅ requestAgent() called - is_waiting_for_call should be TRUE now');
+            
+            // הצג חלונית המתנה
+            document.getElementById('waitingWindow').classList.add('show');
+            
+            // נסה לקבל lookup code (PIN)
+            setTimeout(() => {
+                Upscope('getLookupCode', function(code) {
+                    if (code) {
+                        document.getElementById('pinCode').textContent = code;
+                        console.log('🔑 Lookup Code (PIN):', code);
+                    } else {
+                        console.log('⚠️ Lookup code not available yet, retrying...');
+                        // נסה שוב אחרי 2 שניות
+                        setTimeout(() => {
+                            Upscope('getLookupCode', function(retryCode) {
+                                if (retryCode) {
+                                    document.getElementById('pinCode').textContent = retryCode;
+                                    console.log('🔑 Lookup Code (retry):', retryCode);
+                                } else {
+                                    console.log('❌ Could not get lookup code');
+                                    document.getElementById('pinCode').textContent = '----';
+                                }
+                            });
+                        }, 2000);
+                    }
+                });
+            }, 1000);
+        }
+        
+        function closeWaitingWindow() {
+            document.getElementById('waitingWindow').classList.remove('show');
+        }
+        
+        function updateWaitingStatus(status) {
+            const statusEl = document.getElementById('waitingStatus');
+            if (status === 'connected') {
+                statusEl.className = 'waiting-status agent-connected';
+                statusEl.innerHTML = '<span>✅ נציג התחבר! הוא רואה את המסך שלך</span>';
+            } else {
+                statusEl.className = 'waiting-status';
+                statusEl.innerHTML = '<div class="waiting-spinner"></div><span>ממתין לנציג להתחברות...</span>';
+            }
+        }
+        
+        // ============================================
+        // 4. Form Handling
         // ============================================
         
         // Validation for ID number - only digits
@@ -321,7 +632,7 @@
         });
         
         // ============================================
-        // 4. Form Submission + Upscope Update
+        // 5. Form Submission + Upscope Update
         // ============================================
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -356,7 +667,7 @@
         });
         
         // ============================================
-        // 5. Upscope Events (optional logging)
+        // 6. Upscope Events (optional logging)
         // ============================================
         Upscope('on', 'connect', function() {
             console.log('✅ Connected to Upscope');
@@ -368,10 +679,16 @@
         
         Upscope('on', 'sessionStart', function() {
             console.log('🎥 Session started - agent is watching');
+            
+            // עדכן את חלונית ההמתנה
+            updateWaitingStatus('connected');
         });
         
         Upscope('on', 'sessionEnd', function() {
             console.log('👋 Session ended');
+            
+            // סגור את חלונית ההמתנה
+            closeWaitingWindow();
         });
     </script>
 </body>
