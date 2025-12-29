@@ -725,11 +725,13 @@
                     tags: ['בקשת-עזרה', 'טופס-פרטים']
                 });
                 
-                console.log('✅ Connection updated');
+                console.log('✅ Connection updated - waiting 500ms for server sync...');
                 
-                // 🚀 בקש עזרה - זה משנה is_waiting_for_call ל-true!
-                Upscope('requestAgent');
-                console.log('🆘 requestAgent() called - is_waiting_for_call should be TRUE now!');
+                // 🚀 חכה רגע שהעדכון יעבור, ואז בקש עזרה
+                setTimeout(() => {
+                    Upscope('requestAgent');
+                    console.log('🆘 requestAgent() called - is_waiting_for_call should be TRUE now!');
+                }, 500);
                 
                 // הצג הודעת הצלחה
                 document.getElementById('successModal').classList.add('show');
